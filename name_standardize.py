@@ -5,7 +5,8 @@ import re
 #
 
 # regular expression substitutions
-paren = r"'S|\(.*\)|\."
+# Ref: regex101.com :) 
+paren = r"'S|\(.*\)|\." #paren or dot or 'S 
 punct = r"[^\w\s]"
 space = r"[ ]{2,}"
 
@@ -19,7 +20,7 @@ def name_standardize_weak(name):
     name_strip = paren_re.sub(' ',name_strip)
     name_strip = punct_re.sub(' ',name_strip)
     name_strip = space_re.sub(' ',name_strip)
-    name_strip = name_strip.strip()
+    name_strip = name_strip.strip() # trim white space in front/end 
     return name_strip
 
 #
@@ -27,32 +28,32 @@ def name_standardize_weak(name):
 #
 
 # whitespace
-white0 = r" +"
+white0 = r" +" # >=1 whitespace 
 white0_re = re.compile(white0)
 
 # postscripts
-post0 = r"(\bA CORP.|;|,).*$"
+post0 = r"(\bA CORP.|;|,).*$"# remove A CORP+a whatever charater 
 post0_re = re.compile(post0)
 
 # acronyms
-acronym1 = r"\b(\w) (\w) (\w)\b"
+acronym1 = r"\b(\w) (\w) (\w)\b" # e.g 'a a a'
 acronym1_re = re.compile(acronym1)
-acronym2 = r"\b(\w) (\w)\b"
+acronym2 = r"\b(\w) (\w)\b" # e.g 'a a'
 acronym2_re = re.compile(acronym2)
-acronym3 = r"\b(\w)-(\w)-(\w)\b"
+acronym3 = r"\b(\w)-(\w)-(\w)\b" # 'a-a-a'
 acronym3_re = re.compile(acronym3)
-acronym4 = r"\b(\w)-(\w)\b"
+acronym4 = r"\b(\w)-(\w)\b" #'a-a'
 acronym4_re = re.compile(acronym4)
-acronym5 = r"\b(\w\w)&(\w)\b"
+acronym5 = r"\b(\w\w)&(\w)\b" # 'aa&a'
 acronym5_re = re.compile(acronym5)
-acronym6 = r"\b(\w)&(\w)\b"
+acronym6 = r"\b(\w)&(\w)\b" #'a&a'
 acronym6_re = re.compile(acronym6)
-acronym7 = r"\b(\w) & (\w)\b"
+acronym7 = r"\b(\w) & (\w)\b" #'a & a'
 acronym7_re = re.compile(acronym7)
 
 # punctuation
-punct0 = r"'S|\(.*\)|\."
-punct1 = r"[^\w\s]"
+punct0 = r"'S|\(.*\)|\." # ''S' | . | ()
+punct1 = r"[^\w\s]"  
 punct0_re = re.compile(punct0)
 punct1_re = re.compile(punct1)
 
@@ -71,7 +72,7 @@ gener0_re = re.compile('|'.join([r"\b{}\b".format(el) for el in dropout]))
 def name_standardize_strong(name):
     name_strip = name
     name_strip = post0_re.sub('',name_strip)
-    name_strip = acronym1_re.sub(r"\1\2\3",name_strip)
+    name_strip = acronym1_re.sub(r"\1\2\3",name_strip) #e.g 'a b c' -> 'abc'
     name_strip = acronym2_re.sub(r"\1\2",name_strip)
     name_strip = acronym3_re.sub(r"\1\2\3",name_strip)
     name_strip = acronym4_re.sub(r"\1\2",name_strip)
@@ -80,6 +81,6 @@ def name_standardize_strong(name):
     name_strip = acronym7_re.sub(r"\1\2",name_strip)
     name_strip = punct0_re.sub('',name_strip)
     name_strip = punct1_re.sub(' ',name_strip)
-    name_strip = gener0_re.sub('',name_strip)
+    name_strip = gener0_re.sub('',name_strip) # remove all generic terms. e.g CORP, TECH 
     name_strip = white0_re.sub(' ',name_strip)
     return name_strip.strip()
